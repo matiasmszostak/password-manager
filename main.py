@@ -61,6 +61,28 @@ def save_password():
         password_entry.delete(0, END)
 
 
+# ---------------------------- FIND PASSWORD ------------------------------- #
+
+def find_password():
+    website = website_entry.get().lower()
+
+
+    try:
+        with open("passwords.txt", "r") as data_file:
+            data = json.load(data_file)
+            data_lower = {key.lower(): value for key, value in data.items()}
+    except (FileNotFoundError, json.decoder.JSONDecodeError):
+        messagebox.showerror(title="Error", message="There is not any password saved for now.")
+    else:
+        if website in data_lower:
+            website_data = data_lower[website]
+            email = website_data["email"]
+            password = website_data["password"]
+            messagebox.showinfo(title=website.capitalize(), message=f"Email: {email}\n"
+                                                                    f"Password: {password}")
+        else:
+            messagebox.showerror(title="Error", message=f"No details for {website.capitalize()} exists in the data file.")
+
 
 
 
@@ -86,8 +108,8 @@ password_label = Label(text="Password:")
 password_label.grid(column=0, row=3, sticky="E", pady=5)
 
 # Entries
-website_entry = Entry(width=41)
-website_entry.grid(column=1, row=1, columnspan=2, sticky="W", pady=5)
+website_entry = Entry(width=22)
+website_entry.grid(column=1, row=1, sticky="W", pady=5)
 website_entry.focus()
 email_entry = Entry(width=41)
 email_entry.grid(column=1, row=2, columnspan=2, sticky="W", pady=5)
@@ -98,6 +120,8 @@ password_entry.grid(column=1, row=3, sticky="W", pady=5)
 # Buttons
 generate_pass_button = Button(text="Generate Password", width=14, command=generate_password)
 generate_pass_button.grid(column=2, row=3, sticky="W", padx=5)
+search_button = Button(text="Search", width=14, command=find_password)
+search_button.grid(column=2, row=1, sticky="W", padx=5)
 add_button = Button(text="Add", width=36, command=save_password)
 add_button.grid(column=1, row=4, columnspan=2, pady=10)
 
